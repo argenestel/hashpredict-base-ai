@@ -40,8 +40,8 @@ const NavBar = ({ isMobile }) => {
     { icon: <User size={20} />, label: 'Profile', route: 'profile' },
   ];
 
-  const NavContent = () => (
-    <div className={`flex items-center ${isMobile ? 'justify-between w-full' : 'space-x-4'}`}>
+  const NavContent = ({ position }) => (
+    <div className={`flex items-center ${position === 'bottom' ? 'justify-around w-full' : 'space-x-4'}`}>
       {navItems.map((item) => (
         <NavItem
           key={item.route}
@@ -49,7 +49,7 @@ const NavBar = ({ isMobile }) => {
           label={item.label}
           isActive={activeTab === item.route}
           onClick={() => handleNavigation(item.route)}
-          isMobile={isMobile}
+          isMobile={position === 'bottom'}
         />
       ))}
     </div>
@@ -66,13 +66,22 @@ const NavBar = ({ isMobile }) => {
         <div className="flex justify-between items-center">
           <span className="text-white font-bold text-xl">#Predict.AI</span>
           <div className="flex items-center space-x-2">
-            {!isMobile && <NavContent />}
+            {!isMobile && <NavContent position="top" />}
             <DynamicWidget />
           </div>
         </div>
       </motion.nav>
 
-
+      {isMobile && (
+        <motion.nav
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-xl p-2 shadow-lg dark:bg-[#0b14374d] z-50"
+        >
+          <NavContent position="bottom" />
+        </motion.nav>
+      )}
 
       <AnimatePresence>
         {showTutorial && (
@@ -117,7 +126,6 @@ const NavItem = ({ icon, label, isActive, onClick, isMobile }) => (
       flex flex-col items-center justify-center 
       py-2 px-4 rounded-xl transition-colors
       ${isActive ? 'text-blue-500 bg-white/20' : 'text-gray-400 hover:text-gray-200'}
-
       ${isMobile ? 'flex-1' : ''}
     `}
     onClick={onClick}
