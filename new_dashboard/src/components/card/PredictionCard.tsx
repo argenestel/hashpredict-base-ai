@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { IoAdd, IoRemove, IoTimeOutline, IoWalletOutline, IoTrailSign, IoCheckmark, IoClose, IoCash, IoBulb } from 'react-icons/io5';
 import { useReadContract, useWriteContract, useAccount } from 'wagmi';
 import { parseEther } from 'viem';
-import { morphHolesky } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import axios from 'axios';
 
 interface PredictionCardProps {
@@ -80,7 +80,7 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
         abi: abi,
         functionName: 'finalizePrediction',
         args: [predictionId, BigInt(finalOutcome)],
-        chain: morphHolesky,
+        chain: baseSepolia,
         account: address
       });
       
@@ -112,7 +112,7 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
         abi: abi,
         functionName: 'cancelPrediction',
         args: [predictionId],
-        chain: morphHolesky,
+        chain: baseSepolia,
         account: address
       });
     } catch (error) {
@@ -128,7 +128,7 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
         abi: abi,
         functionName: 'distributeRewards',
         args: [predictionId],
-        chain: morphHolesky,
+        chain: baseSepolia,
         account: address
       });
     } catch (error) {

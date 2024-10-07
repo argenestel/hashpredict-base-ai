@@ -6,21 +6,19 @@ import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { http } from 'viem';
-import { morphHolesky } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import NavBar from 'components/navbar';
 
 const config = createConfig({
-  chains: [morphHolesky],
+  chains: [baseSepolia],
   multiInjectedProviderDiscovery: false,
   transports: {
-    [morphHolesky.id]: http()
+    [baseSepolia.id]: http()
   },
 });
 
 const queryClient = new QueryClient();
-
-
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {

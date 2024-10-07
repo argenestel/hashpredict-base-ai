@@ -1,11 +1,11 @@
 import { http, createConfig } from 'wagmi'
-import {   morphHolesky } from 'wagmi/chains'
+import {   baseSepolia } from 'wagmi/chains'
 
 export const config = createConfig({
-  chains: [  morphHolesky],
+  chains: [  baseSepolia],
   multiInjectedProviderDiscovery: false,
 
   transports: {
-    [morphHolesky.id]: http()
+    [baseSepolia.id]: http()
   },
 })

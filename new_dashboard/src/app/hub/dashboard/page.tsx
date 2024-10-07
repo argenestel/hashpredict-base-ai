@@ -7,7 +7,7 @@ import { IoAdd, IoClose, IoDownload, IoLink, IoRefresh, IoBulb,IoWater } from 'r
 import PredictionCard from 'components/card/PredictionCard';
 import { abi } from '../../../abi';
 import { parseEther } from 'viem';
-import { morphHolesky } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 
 const contractAddress = '0x779d7026FA2100C97AE5E2e8381f6506D5Bf31D4';
 const PREDICTOR_ROLE = '0xfe9eaad5f5acc86dfc672d62b2c2acc0fccbdc369951a11924b882e2c44ed506';
@@ -103,7 +103,7 @@ const Dashboard = () => {
         functionName: 'placeVotes',
         args: [BigInt(id), isYes ? BigInt(0) : BigInt(1), BigInt(amount)],
         value: parseEther((amount * 0.001).toString()),
-        chain: morphHolesky,
+        chain: baseSepolia,
         account: address
       });
     } catch (error) {
@@ -147,7 +147,7 @@ const Dashboard = () => {
           BigInt(newPrediction.optionsCount),
           newPrediction.tags.split(',').map(tag => tag.trim())
         ],
-        chain: morphHolesky,
+        chain: baseSepolia,
         account: address
       });
       setIsModalOpen(false);

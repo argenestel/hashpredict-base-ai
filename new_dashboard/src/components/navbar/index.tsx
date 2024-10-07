@@ -72,16 +72,7 @@ const NavBar = ({ isMobile }) => {
         </div>
       </motion.nav>
 
-      {isMobile && (
-        <motion.nav
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-4 left-4 right-4 bg-white/10 backdrop-blur-xl p-2 shadow-lg rounded-xl dark:bg-[#0b14374d] z-40"
-        >
-          <NavContent />
-        </motion.nav>
-      )}
+
 
       <AnimatePresence>
         {showTutorial && (
@@ -126,6 +117,7 @@ const NavItem = ({ icon, label, isActive, onClick, isMobile }) => (
       flex flex-col items-center justify-center 
       py-2 px-4 rounded-xl transition-colors
       ${isActive ? 'text-blue-500 bg-white/20' : 'text-gray-400 hover:text-gray-200'}
+
       ${isMobile ? 'flex-1' : ''}
     `}
     onClick={onClick}
