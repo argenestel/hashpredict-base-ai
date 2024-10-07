@@ -34,6 +34,10 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
 
+  const [testFinalizeData, setTestFinalizeData] = useState<any>(null);
+  const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+
+
   const { data: hasAdminRole } = useReadContract({
     address: contractAddress,
     abi: abi,
@@ -103,6 +107,41 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
   const handlePredict = () => {
     onPredict(Number(predictionId), isYesSelected, shareAmount);
   };
+
+
+  const handleTestFinalize = async () => {
+    try {
+      setIsAIFinalizing(true);
+      const response = await axios.post('https://ai-predict-fcdw.onrender.com/test/finalize-prediction', {
+        description: description
+      });
+      setTestFinalizeData(response.data);
+      setIsTestModalOpen(true);
+    } catch (error) {
+      console.error('Error testing finalization:', error);
+    } finally {
+      setIsAIFinalizing(false);
+    }
+  };
+
+  const handleConfirmFinalize = async () => {
+    if (!testFinalizeData || !address) return;
+    try {
+      await writeContract({
+        address: contractAddress,
+        abi: abi,
+        functionName: 'finalizePrediction',
+        args: [predictionId, BigInt(testFinalizeData.outcome)],
+        chain: baseSepolia,
+        account: address
+      });
+      console.log('Prediction finalized based on test data');
+      setIsTestModalOpen(false);
+    } catch (error) {
+      console.error('Error finalizing prediction:', error);
+    }
+  };
+
 
   const handleCancel = async () => {
     if (!address) return;
@@ -300,6 +339,69 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
           </motion.button>
         </div>
       )}
+      {isActive && isPredictionEnded && (
+                <div className="p-4 bg-gray-50 dark:bg-navy-900 border-t border-gray-200 dark:border-navy-700">
+          <div className="flex flex-col space-y-2"></div>
+            <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleTestFinalize()}
+            disabled={isAIFinalizing}
+            className="w-full bg-purple-500 text-white rounded-lg py-2 px-4 text-sm font-medium flex items-center justify-center"
+          >
+           {isAIFinalizing ? (
+             <>
+               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+               Testing AI Finalization...
+             </>
+           ) : (
+             <>
+               <IoBulb className="mr-1" /> Test AI Finalization
+             </>
+           )}
+         </motion.button>
+         </div>
+      )}
+        {isTestModalOpen && testFinalizeData && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white dark:bg-navy-800 p-6 rounded-lg max-w-md w-full shadow-xl"
+            >
+              <h3 className="text-lg font-bold mb-4 text-navy-700 dark:text-white">Test Finalization Result</h3>
+              <p className="text-gray-700 dark:text-gray-300"><strong>Outcome:</strong> {testFinalizeData.outcome === 1 ? 'Yes' : 'No'}</p>
+              <p className="text-gray-700 dark:text-gray-300"><strong>Confidence:</strong> {(testFinalizeData.confidence * 100).toFixed(2)}%</p>
+              <p className="text-gray-700 dark:text-gray-300"><strong>Explanation:</strong> {testFinalizeData.explanation}</p>
+              <div className="mt-4 flex justify-end space-x-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsTestModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 dark:bg-navy-600 text-gray-800 dark:text-white rounded transition-colors duration-200"
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleConfirmFinalize}
+                  className="px-4 py-2 bg-blue-500 text-white rounded transition-colors duration-200"
+                >
+                  Confirm Finalization
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+
 
       {isAdmin && isActive && isPredictionEnded && (
         <div className="p-4 bg-gray-50 dark:bg-navy-900 border-t border-gray-200 dark:border-navy-700">
