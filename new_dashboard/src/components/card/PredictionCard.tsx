@@ -228,7 +228,7 @@ const PredictionCard: React.FC<PredictionCardProps> = ({
   return (
     <div className="w-full h-full bg-white dark:bg-navy-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl border border-gray-200 dark:border-navy-700 flex flex-col">
       <div className="p-4 flex-grow">
-        <h2 className="text-lg font-bold text-navy-700 dark:text-white mb-2 line-clamp-2">
+        <h2 className=" font-bold text-navy-700 dark:text-white mb-2 line-clamp-4">
           {description}
         </h2>
         <div className="flex items-center justify-between mb-4 text-sm text-gray-600 dark:text-gray-400">
